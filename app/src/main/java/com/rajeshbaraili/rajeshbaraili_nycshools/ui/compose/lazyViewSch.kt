@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jp.nycschoolapp.util.Response
@@ -24,15 +25,16 @@ import com.jp.nycschools.viewmodel.SchoolViewModel
 import com.rajeshbaraili.rajeshbaraili_nycshools.R
 import com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose.CircularProgressBar
 import com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose.ErrorMsg
+import com.rajeshbaraili.rajeshbaraili_nycshools.ui.theme.backCard
 
 @Composable
 fun ItemUiSc(school: School) {
     var expand by remember { (mutableStateOf(false)) }
-    Surface(
-        color = MaterialTheme.colors.surface, modifier = Modifier
-            .padding(vertical = 4.dp, horizontal = 8.dp)
-            .clip(shape = RoundedCornerShape(10))
-    ) {
+    Card(
+        backgroundColor =Color.White,
+        elevation = Dp(2F),
+        modifier = Modifier.padding(all = 16.dp)
+    )  {
         Column(
             modifier = Modifier
                 .padding(24.dp)
@@ -72,7 +74,7 @@ fun ItemUiSc(school: School) {
             if (expand) {
                 Column(
                     modifier = Modifier
-                        .background(color = Color.White)
+                        .background(color = backCard)
                         .padding(15.dp)
                         .fillMaxWidth()
                 ) {
@@ -132,7 +134,7 @@ fun schoolScreen() {
 
 @Composable
 fun loadData(response: Response.Success<List<School>>) {
-    LazyColumn() {
+    LazyColumn(Modifier.background(backCard)) {
         items(response.data!!) { index ->
             ItemUiSc(index)
         }
