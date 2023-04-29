@@ -10,8 +10,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import com.google.accompanist.pager.*
-import com.jp.nysandroidapp.ui.compose.satScreen
-import com.jp.nysandroidapp.ui.compose.schoolScreen
+import com.jp.nysandroidapp.ui.compose.SatScreen
+import com.jp.nysandroidapp.ui.compose.SchoolScreen
 import com.rajeshbaraili.rajeshbaraili_nycshools.R
 import kotlinx.coroutines.launch
 
@@ -104,10 +104,10 @@ fun TabsContent(pagerState: PagerState) {
         when (page) {
 //called pages on click icon
             0 -> {
-                schoolScreen()
+                SchoolScreen()
             }
             1 -> {
-                satScreen()
+                SatScreen()
             }
         }
     }

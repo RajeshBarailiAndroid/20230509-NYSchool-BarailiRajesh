@@ -107,7 +107,7 @@ fun ItemUi(sat: Sat) {
 }
 
 @Composable
-fun satScreen() {
+fun SatScreen() {
     val viewModel: SatViewModel = viewModel()
     var response = viewModel.sat.observeAsState().value
     when (response) {
@@ -115,7 +115,7 @@ fun satScreen() {
             CircularProgressBar()
         }
         is Response.Success -> {
-            loadDataSat(response)
+            LoadDataSat(response)
         }
         is Response.Error -> {
             ErrorMsg("SAT")
@@ -127,9 +127,9 @@ fun satScreen() {
 }
 
 @Composable
-fun loadDataSat(response: Response.Success<List<Sat>>) {
+fun LoadDataSat(response: Response.Success<List<Sat>>) {
     LazyColumn(Modifier.background(backCard)) {
-        items(response.data!!) { index ->
+        items(response.data) { index ->
             ItemUi(index)
         }
 

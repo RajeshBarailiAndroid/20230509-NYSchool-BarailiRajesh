@@ -110,7 +110,7 @@ fun ItemUiSc(school: School) {
 }
 
 @Composable
-fun schoolScreen() {
+fun SchoolScreen() {
     val viewModel: SchoolViewModel = viewModel()
     var response = viewModel.schools.observeAsState().value
 //loading,success and error condition
@@ -120,7 +120,7 @@ fun schoolScreen() {
         }
         is Response.Success -> {
 
-            loadData(response)
+            LoadData(response)
 
         }
         is Response.Error -> {
@@ -133,7 +133,7 @@ fun schoolScreen() {
 }
 
 @Composable
-fun loadData(response: Response.Success<List<School>>) {
+fun LoadData(response: Response.Success<List<School>>) {
     LazyColumn(Modifier.background(backCard)) {
         items(response.data!!) { index ->
             ItemUiSc(index)

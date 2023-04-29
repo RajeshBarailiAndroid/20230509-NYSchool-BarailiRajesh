@@ -52,8 +52,14 @@ android {
     }
     //base Url
     buildTypes {
-        DEBUG {
-            buildConfigField "String", "url", baseUrl
+        release {
+            minifyEnabled false
+            debuggable false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            // other configurations for debug build type
         }
     }
 }
