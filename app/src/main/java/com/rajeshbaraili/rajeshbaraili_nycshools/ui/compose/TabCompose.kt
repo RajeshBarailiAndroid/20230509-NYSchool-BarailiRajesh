@@ -1,7 +1,9 @@
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.res.painterResource
@@ -10,6 +12,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import com.google.accompanist.pager.*
+import com.jp.nycschoolapp.util.Response
+import com.jp.nycschools.model.School
+import com.jp.nycschools.viewmodel.SchoolViewModel
 import com.jp.nysandroidapp.ui.compose.SatScreen
 import com.jp.nysandroidapp.ui.compose.SchoolScreen
 import com.rajeshbaraili.rajeshbaraili_nycshools.R
@@ -99,7 +104,9 @@ fun Tabs(pagerState: PagerState) {
 
 @ExperimentalPagerApi
 @Composable
-fun TabsContent(pagerState: PagerState) {
+fun TabsContent(
+    pagerState: PagerState,
+    ) {
     HorizontalPager(state = pagerState) { page ->
         when (page) {
 //called pages on click icon
@@ -107,7 +114,7 @@ fun TabsContent(pagerState: PagerState) {
                 SchoolScreen()
             }
             1 -> {
-                SatScreen()
+               SatScreen()
             }
         }
     }
