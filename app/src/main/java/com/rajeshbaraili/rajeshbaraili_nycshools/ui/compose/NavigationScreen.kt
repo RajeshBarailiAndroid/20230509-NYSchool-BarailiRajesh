@@ -20,7 +20,7 @@ import com.rajeshbaraili.rajeshbaraili_nycshools.util.Destination
 fun NavigationScreen(navController: NavHostController, schv:SchoolViewModel) {
 
         val navController = rememberNavController()
-    val viewModelSchool:SchoolViewModel = viewModel()
+
     //val viewModelSat = viewModel<SatViewModel>()
 
         NavHost(
