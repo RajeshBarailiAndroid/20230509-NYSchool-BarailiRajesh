@@ -1,56 +1,37 @@
 package com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose
 
 import TabLayout
-import androidx.compose.material.Button
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.jp.nycschools.viewmodel.SatViewModel
 import com.jp.nycschools.viewmodel.SchoolViewModel
 import com.rajeshbaraili.rajeshbaraili_nycshools.util.Destination
 
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun NavigationScreen(navController: NavHostController, schv:SchoolViewModel) {
+fun NavigationScreen() {
+    var schoolVieModel: SchoolViewModel = viewModel()
+    var satViewModel: SatViewModel = viewModel()
+    val navController = rememberNavController()
 
-        val navController = rememberNavController()
-
-    //val viewModelSat = viewModel<SatViewModel>()
-
-        NavHost(
-            navController = navController,
-            startDestination = Destination.TabLayout.route
-        ) {
-            composable(Destination.TabLayout.route) {
-
-                TabLayout()
-            }
-           }
+    NavHost(
+        navController = navController,
+        startDestination = Destination.HomeScreen.route
+    ) {
+        composable(route = Destination.HomeScreen.route) {
+            TabLayout(navController, schoolVieModel, satViewModel)
         }
-
-
-
-    @OptIn(ExperimentalPagerApi::class)
-    @Composable
-    fun HomeScreen(navController: NavController) {
-        // Your HomeScreen Composable function code goes here
-       // TabLayout()
-        Button(onClick = { navController.navigate("details") }) {
-            Text("Go to Details Screen")
+        composable(route = Destination.MapScreen.route) {
+            MapScreen()
         }
     }
+}
 
-    @Composable
-    fun DetailsScreen(navController: NavController) {
-        // Your DetailsScreen Composable function code goes here
-        Button(onClick = { navController.popBackStack() }) {
-            Text("Go Back")
-        }
-    }
+
+
 

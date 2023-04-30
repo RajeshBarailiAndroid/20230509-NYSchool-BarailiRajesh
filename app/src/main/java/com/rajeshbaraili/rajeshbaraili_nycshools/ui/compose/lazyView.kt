@@ -1,6 +1,5 @@
 package com.jp.nysandroidapp.ui.compose
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -33,7 +32,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jp.nycschoolapp.util.Response
 import com.jp.nycschools.viewmodel.SatViewModel
 import com.jp.nysandroidapp.ui.model.Sat
@@ -122,17 +120,14 @@ fun ItemUi(sat: Sat) {
 }
 
 @Composable
-fun SatScreen() {
-    val viewModel: SatViewModel = viewModel()
-
+fun SatScreen(viewModel: SatViewModel) {
     var response = viewModel.sat.observeAsState().value
-    Log.e("TAG", "SatScreen: "+response )
     when (response) {
         is Response.Loading -> {
             CircularProgressBar()
         }
         is Response.Success -> {
-           // LoadDataSat(response)
+           LoadDataSat(response)
         }
         is Response.Error -> {
             ErrorMsg("SAT")

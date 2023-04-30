@@ -1,5 +1,6 @@
 package com.jp.nysandroidapp.ui.compose
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,9 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.jp.nycschoolapp.util.Response
 import com.jp.nycschools.model.School
 import com.jp.nycschools.viewmodel.SchoolViewModel
@@ -47,9 +46,11 @@ import com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose.ErrorMsg
 import com.rajeshbaraili.rajeshbaraili_nycshools.ui.theme.backCard
 
 @Composable
-fun ItemUiSc(school: School) {
-    var navController: NavHostController = rememberNavController()
+fun ItemUiSc(school: School, navController: NavHostController) {
+   // var navController: NavHostController = rememberNavController()
     var expand by remember { (mutableStateOf(false)) }
+    var map by remember { (mutableStateOf(false)) }
+
     Card(
         backgroundColor = Color.White,
         elevation = Dp(2F),
@@ -153,7 +154,7 @@ fun ItemUiSc(school: School) {
                                         modifier = Modifier
                                             .size(50.dp)
                                             .clickable {
-                                             //   navController.navigate(Destination.MapScreen.route)
+                                                navController.navigate("map")
                                             },
                                         contentDescription = "map"
                                     )
@@ -169,8 +170,14 @@ fun ItemUiSc(school: School) {
 }
 
 @Composable
-fun SchoolScreen() {
-    val viewModel: SchoolViewModel = viewModel()
+fun MapFun() {
+    Log.e("TAG", "MapFun:11111111111111111111111111111111 " )
+
+}
+
+@Composable
+fun SchoolScreen(navController: NavHostController, viewModel: SchoolViewModel) {
+   // val viewModel: SchoolViewModel = viewModel()
     var response = viewModel.schools.observeAsState().value
 //loading,success and error condition
     when (response) {
@@ -180,7 +187,7 @@ fun SchoolScreen() {
 
         is Response.Success -> {
 
-            LoadData(response)
+            LoadData(response,navController)
 
         }
 
@@ -197,7 +204,7 @@ fun SchoolScreen() {
 }
 
 @Composable
-fun LoadData(response: Response.Success<List<School>>) {
+fun LoadData(response: Response.Success<List<School>>, navController: NavHostController) {
     var searchQuery by remember { mutableStateOf("") }
     var listItems = response.data
     val filteredList = if (searchQuery.isEmpty()) {
@@ -246,7 +253,7 @@ fun LoadData(response: Response.Success<List<School>>) {
         ) {
 
             items(filteredList) { item ->
-                ItemUiSc(item)
+                ItemUiSc(item,navController)
             }
         }
     }

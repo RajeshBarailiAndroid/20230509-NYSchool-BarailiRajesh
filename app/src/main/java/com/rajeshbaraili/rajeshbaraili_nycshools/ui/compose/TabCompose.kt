@@ -3,7 +3,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.res.painterResource
@@ -11,9 +10,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
+import androidx.navigation.NavHostController
 import com.google.accompanist.pager.*
-import com.jp.nycschoolapp.util.Response
-import com.jp.nycschools.model.School
+import com.jp.nycschools.viewmodel.SatViewModel
 import com.jp.nycschools.viewmodel.SchoolViewModel
 import com.jp.nysandroidapp.ui.compose.SatScreen
 import com.jp.nysandroidapp.ui.compose.SchoolScreen
@@ -24,7 +23,11 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalUnitApi::class)
 @ExperimentalPagerApi
 @Composable
-fun TabLayout() {
+fun TabLayout(
+    navController: NavHostController,
+    schoolVieModel: SchoolViewModel,
+    satViewmodel: SatViewModel
+) {
     //number of pages =2
     val pagerState = rememberPagerState(pageCount = 2)
     Column(
@@ -54,7 +57,7 @@ fun TabLayout() {
             }
         }
         Tabs(pagerState = pagerState)
-        TabsContent(pagerState = pagerState)
+        TabsContent(pagerState = pagerState,navController,schoolVieModel,satViewmodel)
     }
 }
 
@@ -106,15 +109,18 @@ fun Tabs(pagerState: PagerState) {
 @Composable
 fun TabsContent(
     pagerState: PagerState,
+    navController: NavHostController,
+    schoolVieModel: SchoolViewModel,
+    satViewmodel: SatViewModel,
     ) {
     HorizontalPager(state = pagerState) { page ->
         when (page) {
 //called pages on click icon
             0 -> {
-                SchoolScreen()
+               SchoolScreen(navController,schoolVieModel)
             }
             1 -> {
-               SatScreen()
+               SatScreen(satViewmodel)
             }
         }
     }
