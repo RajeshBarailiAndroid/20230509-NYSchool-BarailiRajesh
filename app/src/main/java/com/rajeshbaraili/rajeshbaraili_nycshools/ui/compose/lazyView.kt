@@ -14,10 +14,11 @@ import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,8 +27,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -46,7 +50,7 @@ fun ItemUi(sat: Sat) {
     Card(
         backgroundColor = Color.White,
         elevation = Dp(2F),
-        modifier = Modifier.padding(all = 16.dp)
+        modifier = Modifier.padding(all = 16.dp), shape = RoundedCornerShape(8.dp)
     ) {
         Column(
             modifier = Modifier
@@ -92,7 +96,7 @@ fun ItemUi(sat: Sat) {
                 ) {
                     val list = listOf(
                         "Number Of Test Takers :- " to sat.num_of_sat_test_takers,
-                        "Critical Reading Average Score :-" to sat.sat_critical_reading_avg_score,
+                        "Critical Reading Average Score :-" to sat.dbn,
                         "SAT Writing Average Score:- " to sat.sat_writing_avg_score,
                         "Math Average Score:- " to sat.sat_math_avg_score
                     )
@@ -138,10 +142,13 @@ fun SatScreen(viewModel: SatViewModel) {
 
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LoadDataSat(response: Response.Success<List<Sat>>) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     var searchQuery by remember { mutableStateOf("") }
-var listItems=response.data
+    var listItems = response.data
     val filteredList = if (searchQuery.isEmpty()) {
         listItems
     } else {
@@ -151,14 +158,15 @@ var listItems=response.data
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(backCard),
+                .background(backCard).padding(vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically
+
         ) {
-            OutlinedTextField(
+            TextField(
                 modifier = Modifier
                     .weight(1f)
                     .background(backCard)
-                    .padding(horizontal = 30.dp, vertical = 8.dp),
+                    .padding(horizontal = 30.dp),
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
                 placeholder = { Text("Search") },
@@ -168,14 +176,24 @@ var listItems=response.data
                         contentDescription = "Search Icon",
                         tint = Color.Gray
                     )
+                }, trailingIcon = {
+                    IconButton(onClick = {
+                        searchQuery = ""
+                        keyboardController?.hide()
+                        focusManager.clearFocus(true)
+                    }
+                    ){
+                        Icon(Icons.Filled.Close, contentDescription = "Clear Search")
+                    }
                 },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     textColor = Color.Black,
                     focusedBorderColor = Color.Gray,
                     unfocusedBorderColor = Color.Gray,
-                    backgroundColor = backCard
-                ),
-                shape = RoundedCornerShape(8.dp)
+                    backgroundColor = backCard,
+                    cursorColor = Color.Black
+
+                )
             )
         }
         LazyColumn(

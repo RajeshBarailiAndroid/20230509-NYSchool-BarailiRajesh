@@ -1,6 +1,5 @@
 package com.jp.nycschools.network
 
-import com.google.android.datatransport.runtime.dagger.Provides
 import com.jp.nycschools.model.School
 import com.jp.nysandroidapp.ui.model.Sat
 import javax.inject.Inject
@@ -13,8 +12,6 @@ class SchoolRepository @Inject constructor(private val schoolApi: SchoolApi) {
     suspend fun getSchool(): List<School> {
         return schoolApi.getSchools()
     }
-
-
     suspend fun getSat(): List<Sat> {
         return schoolApi.getSat()
 

@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 fun TabLayout(
     navController: NavHostController,
     schoolVieModel: SchoolViewModel,
-    satViewmodel: SatViewModel
+    viewModel2: SatViewModel
 ) {
     //number of pages =2
     val pagerState = rememberPagerState(pageCount = 2)
@@ -57,7 +57,7 @@ fun TabLayout(
             }
         }
         Tabs(pagerState = pagerState)
-        TabsContent(pagerState = pagerState,navController,schoolVieModel,satViewmodel)
+        TabsContent(pagerState = pagerState,navController,schoolVieModel,viewModel2)
     }
 }
 
@@ -110,17 +110,17 @@ fun Tabs(pagerState: PagerState) {
 fun TabsContent(
     pagerState: PagerState,
     navController: NavHostController,
-    schoolVieModel: SchoolViewModel,
-    satViewmodel: SatViewModel,
+    viewModel1: SchoolViewModel,
+    viewModel2: SatViewModel,
     ) {
     HorizontalPager(state = pagerState) { page ->
         when (page) {
 //called pages on click icon
             0 -> {
-               SchoolScreen(navController,schoolVieModel)
+               SchoolScreen(navController,viewModel1)
             }
             1 -> {
-               SatScreen(satViewmodel)
+               SatScreen(viewModel2)
             }
         }
     }

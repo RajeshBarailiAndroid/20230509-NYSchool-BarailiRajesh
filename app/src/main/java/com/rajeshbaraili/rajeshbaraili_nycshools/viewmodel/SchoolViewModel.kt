@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.jp.nycschoolapp.util.Response
 import com.jp.nycschools.model.School
 import com.jp.nycschools.network.SchoolRepository
-import com.jp.nysandroidapp.ui.model.Sat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
