@@ -30,6 +30,13 @@ fun NavigationScreen() {
         composable(route = Destination.HomeScreen.route) {
             TabLayout(navController, schoolVieModel, satViewModel)
         }
+        composable(route = Destination.SatView.route,
+            arguments = listOf(
+            navArgument("Id") { type = NavType.StringType }
+        )) {
+            val id = it.arguments?.getString("Id") ?:""
+            SatView(navController,satViewModel,id)
+        }
            composable(
             route = Destination.MapScreen.route,
             arguments = listOf(

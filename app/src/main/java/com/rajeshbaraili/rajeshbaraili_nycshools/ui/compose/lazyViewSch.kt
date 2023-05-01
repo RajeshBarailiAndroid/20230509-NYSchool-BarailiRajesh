@@ -1,5 +1,6 @@
 package com.jp.nysandroidapp.ui.compose
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -104,9 +105,10 @@ fun ItemUiSc(school: School, navController: NavHostController) {
                         .padding(15.dp)
                         .fillMaxWidth()
                 ) {
+                    Log.e("TAG", "ItemUiSc: "+school.dbn )
                     val list = listOf(
                         "Total Students :-  " to school.total_students,
-                        "Graduation Rate :-  " to school.dbn,
+                        "Graduation Rate :-  " to school.graduation_rate,
                         "College Career Rate:- " to school.college_career_rate,
                         "School Email :- " to school.school_email,
                         "Phone Number :- " to school.phone_number,
@@ -134,6 +136,7 @@ fun ItemUiSc(school: School, navController: NavHostController) {
 
                         }
                         else {
+
                             Column {
                                 var input = list[index].second
                                 val address = input.substringBefore("(").trim()
@@ -160,7 +163,13 @@ fun ItemUiSc(school: School, navController: NavHostController) {
                                         modifier = Modifier
                                             .size(50.dp)
                                             .clickable {
-                                                navController.navigate(Destination.MapScreen.passArguments(coordinates[0],coordinates[1],address))
+                                                navController.navigate(
+                                                    Destination.MapScreen.passArguments(
+                                                        coordinates[0],
+                                                        coordinates[1],
+                                                        address
+                                                    )
+                                                )
                                             },
                                         contentDescription = "map"
                                     )
@@ -170,9 +179,10 @@ fun ItemUiSc(school: School, navController: NavHostController) {
                                         modifier = Modifier
                                             .size(50.dp)
                                             .clickable {
-                                               // navController.navigate(Destination.MapScreen.passArguments(coordinates[0],coordinates[1],address))
+                                               // Log.e("TAG", "ItemUiSc:------------------ "+school.dbn )
+                                                navController.navigate(Destination.SatView.passId(school.dbn))
                                             },
-                                        contentDescription = "map",
+                                        contentDescription = "",
                                     )
 
                                 }
@@ -189,7 +199,6 @@ fun ItemUiSc(school: School, navController: NavHostController) {
 
 @Composable
 fun SchoolScreen(navController: NavHostController, viewModel: SchoolViewModel) {
-   // val viewModel: SchoolViewModel = viewModel()
     var response = viewModel.schools.observeAsState().value
 //loading,success and error condition
     when (response) {
@@ -231,7 +240,8 @@ fun LoadData(response: Response.Success<List<School>>, navController: NavHostCon
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(backCard).padding(vertical = 10.dp),
+                .background(backCard)
+                .padding(vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically
 
         ) {

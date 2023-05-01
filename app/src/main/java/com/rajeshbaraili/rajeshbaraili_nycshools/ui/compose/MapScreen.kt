@@ -15,5 +15,4 @@ var context= LocalContext.current
         val intent = Intent(Intent.ACTION_VIEW, uri)
        context.startActivity(intent)
 
-
 }}
