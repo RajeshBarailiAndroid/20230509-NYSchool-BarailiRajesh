@@ -1,16 +1,18 @@
 package com.jp.nysandroidapp.ui.compose
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -151,7 +153,8 @@ fun ItemUiSc(school: School, navController: NavHostController) {
                                             text = "N/A"
                                         )
                                 }
-                                Row {
+                                Row (    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically){
                                     Image(
                                         painter = painterResource(id = R.drawable.map),
                                         modifier = Modifier
@@ -160,6 +163,16 @@ fun ItemUiSc(school: School, navController: NavHostController) {
                                                 navController.navigate(Destination.MapScreen.passArguments(coordinates[0],coordinates[1],address))
                                             },
                                         contentDescription = "map"
+                                    )
+                                    Spacer(modifier = Modifier.width(46.dp))
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.sat),
+                                        modifier = Modifier
+                                            .size(50.dp)
+                                            .clickable {
+                                               // navController.navigate(Destination.MapScreen.passArguments(coordinates[0],coordinates[1],address))
+                                            },
+                                        contentDescription = "map",
                                     )
 
                                 }
@@ -172,11 +185,7 @@ fun ItemUiSc(school: School, navController: NavHostController) {
     }
 }
 
-@Composable
-fun MapFun() {
-    Log.e("TAG", "MapFun:11111111111111111111111111111111 " )
 
-}
 
 @Composable
 fun SchoolScreen(navController: NavHostController, viewModel: SchoolViewModel) {

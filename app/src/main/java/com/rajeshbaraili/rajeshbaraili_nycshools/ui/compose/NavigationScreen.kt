@@ -3,7 +3,6 @@ package com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose
 import TabLayout
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -31,11 +30,7 @@ fun NavigationScreen() {
         composable(route = Destination.HomeScreen.route) {
             TabLayout(navController, schoolVieModel, satViewModel)
         }
-        composable(route = Destination.HomeScreen.route) {
-            SatScore(navController, satViewModel)
-        }
-
-        composable(
+           composable(
             route = Destination.MapScreen.route,
             arguments = listOf(
                 navArgument(LATTITUDE) { type = NavType.FloatType },
@@ -46,17 +41,9 @@ fun NavigationScreen() {
             val latitude = it.arguments?.getFloat(LATTITUDE) ?: 0f
             val longitude = it.arguments?.getFloat(LONGITUDE) ?: 0f
             val address = it.arguments?.getString(ADDRESS) ?:""
-            MapScreen(latitude, longitude,address)
+            MapScreen(latitude, longitude,address,navController)
         }
     }
-}
-
-@Composable
-fun SatScore(navController: NavHostController, satViewModel: SatViewModel) {
-
-
-
-
 }
 
 
