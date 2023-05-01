@@ -1,12 +1,14 @@
 package com.jp.nysandroidapp.ui.compose
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,6 +38,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.jp.nycschoolapp.util.Response
 import com.jp.nycschools.viewmodel.SatViewModel
 import com.jp.nysandroidapp.ui.model.Sat
@@ -45,7 +48,8 @@ import com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose.ErrorMsg
 import com.rajeshbaraili.rajeshbaraili_nycshools.ui.theme.backCard
 
 @Composable
-fun ItemUi(sat: Sat) {
+fun ItemUi(sat: Sat, navController: NavHostController) {
+
     var expand by remember { (mutableStateOf(false)) }
     Card(
         backgroundColor = Color.White,
@@ -102,6 +106,9 @@ fun ItemUi(sat: Sat) {
                     )
 
                     list.forEachIndexed { index, pair ->
+                        Column {
+
+
                         Row(modifier = Modifier.padding(vertical = 9.dp)) {
                             Text(
                                 text = list[index].first,
@@ -116,6 +123,22 @@ fun ItemUi(sat: Sat) {
 
                         }
 
+                        }
+
+                    }
+                    Row {
+
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.sat),
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clickable {
+
+                                    navController.navigate("sbnId/${sat.dbn}")
+                                },
+                            contentDescription = "",
+                        )
                     }
                 }
             }
@@ -124,14 +147,14 @@ fun ItemUi(sat: Sat) {
 }
 
 @Composable
-fun SatScreen(viewModel: SatViewModel) {
+fun SatScreen(viewModel: SatViewModel, navController: NavHostController) {
     var response = viewModel.sat.observeAsState().value
     when (response) {
         is Response.Loading -> {
             CircularProgressBar()
         }
         is Response.Success -> {
-           LoadDataSat(response)
+           LoadDataSat(response,navController)
         }
         is Response.Error -> {
             ErrorMsg("SAT")
@@ -144,7 +167,7 @@ fun SatScreen(viewModel: SatViewModel) {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LoadDataSat(response: Response.Success<List<Sat>>) {
+fun LoadDataSat(response: Response.Success<List<Sat>>, navController: NavHostController) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     var searchQuery by remember { mutableStateOf("") }
@@ -158,7 +181,8 @@ fun LoadDataSat(response: Response.Success<List<Sat>>) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(backCard).padding(vertical = 10.dp),
+                .background(backCard)
+                .padding(vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically
 
         ) {
@@ -204,7 +228,7 @@ fun LoadDataSat(response: Response.Success<List<Sat>>) {
         ) {
 
             items(filteredList) { item ->
-                ItemUi(item)
+                ItemUi(item,navController)
             }
         }
     }

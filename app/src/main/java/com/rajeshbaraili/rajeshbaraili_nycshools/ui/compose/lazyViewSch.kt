@@ -180,7 +180,7 @@ fun ItemUiSc(school: School, navController: NavHostController) {
                                             .size(50.dp)
                                             .clickable {
                                                // Log.e("TAG", "ItemUiSc:------------------ "+school.dbn )
-                                                navController.navigate(Destination.SatView.passId(school.dbn))
+                                                navController.navigate("sbnId/${school.dbn}")
                                             },
                                         contentDescription = "",
                                     )

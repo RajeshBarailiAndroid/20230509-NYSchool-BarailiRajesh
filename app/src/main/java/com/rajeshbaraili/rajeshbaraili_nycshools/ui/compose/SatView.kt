@@ -80,7 +80,8 @@ fun SatView(navController: NavHostController, satViewModel: SatViewModel, id: St
 fun Load(response: Response.Success<List<Sat>>, navController: NavHostController, id: String) {
     var listSat = response.data
 var position=id
-    var sat=listSat.filter { it.dbn==id }
+    var sat=listSat.filter { it.dbn==id }?: listOf(Sat("1","0","0","0","0","0"))
+    if(sat.isNotEmpty()){
     var satTakers=sat[0].num_of_sat_test_takers
     Scaffold(
         topBar = {
@@ -99,11 +100,15 @@ var position=id
 
 
     Column(
-        modifier = Modifier.fillMaxSize().background(backCard),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backCard),
     ) {
         Text(
                 text = "Number of SAT test takers: $satTakers",
-                style = MaterialTheme.typography.h5, modifier = Modifier.align(CenterHorizontally).padding(vertical = 55.dp,)
+                style = MaterialTheme.typography.h5, modifier = Modifier
+                .align(CenterHorizontally)
+                .padding(vertical = 55.dp,)
             )
         PieChart(
             data = mapOf(
@@ -114,7 +119,17 @@ var position=id
                 )
         )
     }
-}}}
+}}}else{
+        PieChart(
+            data = mapOf(
+                Pair("Reading",0),
+                Pair("Writting",0),
+                Pair("Math",0),
+
+                )
+        )
+}
+}
 
 @Composable
 fun PieChart(

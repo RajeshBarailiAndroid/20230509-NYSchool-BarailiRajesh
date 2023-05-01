@@ -120,7 +120,7 @@ fun TabsContent(
                SchoolScreen(navController,viewModel1)
             }
             1 -> {
-               SatScreen(viewModel2)
+               SatScreen(viewModel2,navController)
             }
         }
     }
