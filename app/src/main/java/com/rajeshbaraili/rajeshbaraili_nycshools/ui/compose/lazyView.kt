@@ -2,6 +2,7 @@ package com.jp.nysandroidapp.ui.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -12,17 +13,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -38,11 +43,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.jp.nycschoolapp.util.Response
 import com.jp.nycschools.viewmodel.SatViewModel
 import com.jp.nysandroidapp.ui.model.Sat
 import com.rajeshbaraili.rajeshbaraili_nycshools.R
+import com.rajeshbaraili.rajeshbaraili_nycshools.model.RadioButtonOption
 import com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose.CircularProgressBar
 import com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose.ErrorMsg
 import com.rajeshbaraili.rajeshbaraili_nycshools.ui.theme.backCard
@@ -100,16 +107,14 @@ fun ItemUi(sat: Sat, navController: NavHostController) {
                 ) {
                     val list = listOf(
                         "Number Of Test Takers :- " to sat.num_of_sat_test_takers,
-                        "Critical Reading Average Score :-" to sat.dbn,
+                        "Critical Reading Average Score :-" to sat.sat_critical_reading_avg_score,
                         "SAT Writing Average Score:- " to sat.sat_writing_avg_score,
                         "Math Average Score:- " to sat.sat_math_avg_score
                     )
 
                     list.forEachIndexed { index, pair ->
                         Column {
-
-
-                        Row(modifier = Modifier.padding(vertical = 9.dp)) {
+                            Row(modifier = Modifier.padding(vertical = 9.dp)) {
                             Text(
                                 text = list[index].first,
                                 style = MaterialTheme.typography.body2.copy(
@@ -127,14 +132,11 @@ fun ItemUi(sat: Sat, navController: NavHostController) {
 
                     }
                     Row {
-
-
                         Icon(
                             painter = painterResource(id = R.drawable.sat),
                             modifier = Modifier
                                 .size(50.dp)
                                 .clickable {
-
                                     navController.navigate("sbnId/${sat.dbn}")
                                 },
                             contentDescription = "",
@@ -171,12 +173,85 @@ fun LoadDataSat(response: Response.Success<List<Sat>>, navController: NavHostCon
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     var searchQuery by remember { mutableStateOf("") }
-    var listItems = response.data
-    val filteredList = if (searchQuery.isEmpty()) {
+    var showDialog by remember { mutableStateOf(false) }
+    val isVisible by remember {
+        derivedStateOf {
+            searchQuery.isNotBlank()
+        }
+    }
+//filter the sat scores
+    val radioButtonOptions = listOf(
+        RadioButtonOption("Highest Math Score", 1),
+        RadioButtonOption("Highest Reading Score", 2),
+        RadioButtonOption("Highest Writing Score", 3),
+        RadioButtonOption("Highest Numbers Of Test Takers", 4)
+    )
+    var selectedOption by remember { mutableStateOf(radioButtonOptions[0]) }
+
+    var listItem = response.data
+    var listI=listItem.filterNot { it.sat_math_avg_score.contentEquals("s") }
+    val listItems=when(selectedOption.value){
+        1 ->listI.sortedByDescending { it.sat_math_avg_score}
+        2 ->listI.sortedByDescending { it.sat_critical_reading_avg_score }
+        3 ->listI.sortedByDescending { it.sat_writing_avg_score }
+        4 ->listI.sortedByDescending { it.num_of_sat_test_takers}
+        else -> {listItem}
+    }
+
+
+    var filteredList = if (searchQuery.isEmpty()) {
         listItems
+
     } else {
         listItems.filter { it.school_name.contains(searchQuery, ignoreCase = true) }
     }
+
+
+    // show dialog for filter
+    if (showDialog){
+        Dialog(onDismissRequest = { showDialog=false }) {
+
+
+                Column(modifier = Modifier.background(backCard)) {
+                    radioButtonOptions.forEach { option ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .clickable { selectedOption = option }
+                        ) {
+                            RadioButton(
+                                selected = selectedOption == option,
+                                onClick = { selectedOption = option },
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            )
+                            Text(
+                                text = option.text,
+                                modifier = Modifier
+                                    .padding(start = 16.dp)
+                                    .align(Alignment.CenterVertically)
+                            )
+                        }
+
+                    }
+                    Row(Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center) {
+                        Button(onClick = { showDialog=false}) {
+                            Text(text = "Filter")
+
+                        }
+                    }
+
+                }
+
+            }
+
+
+        }
+
+
+
+    //filter by  search text
     Column {
         Row(
             modifier = Modifier
@@ -186,6 +261,7 @@ fun LoadDataSat(response: Response.Success<List<Sat>>, navController: NavHostCon
             verticalAlignment = Alignment.CenterVertically
 
         ) {
+
             TextField(
                 modifier = Modifier
                     .weight(1f)
@@ -201,6 +277,7 @@ fun LoadDataSat(response: Response.Success<List<Sat>>, navController: NavHostCon
                         tint = Color.Gray
                     )
                 }, trailingIcon = {
+                    if (isVisible){
                     IconButton(onClick = {
                         searchQuery = ""
                         keyboardController?.hide()
@@ -208,6 +285,14 @@ fun LoadDataSat(response: Response.Success<List<Sat>>, navController: NavHostCon
                     }
                     ){
                         Icon(Icons.Filled.Close, contentDescription = "Clear Search")
+                    }
+                    }else{
+                        IconButton(onClick = {
+                            showDialog = !showDialog
+                        }
+                        ){
+                            Icon(Icons.Default.Menu, contentDescription = "menu")
+                        }
                     }
                 },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -220,6 +305,8 @@ fun LoadDataSat(response: Response.Success<List<Sat>>, navController: NavHostCon
                 )
             )
         }
+
+        // load data to list
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

@@ -1,5 +1,8 @@
 package com.jp.nysandroidapp.ui.compose
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,17 +20,21 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -37,24 +44,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.jp.nycschoolapp.util.Response
 import com.jp.nycschools.model.School
 import com.jp.nycschools.viewmodel.SchoolViewModel
 import com.rajeshbaraili.rajeshbaraili_nycshools.R
+import com.rajeshbaraili.rajeshbaraili_nycshools.model.RadioButtonOption
 import com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose.CircularProgressBar
 import com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose.ErrorMsg
 import com.rajeshbaraili.rajeshbaraili_nycshools.ui.theme.backCard
-import com.rajeshbaraili.rajeshbaraili_nycshools.util.Destination
 
 @Composable
 fun ItemUiSc(school: School, navController: NavHostController) {
+    var context= LocalContext.current
     var expand by remember { (mutableStateOf(false)) }
     Card(
         backgroundColor = Color.White,
@@ -88,7 +98,7 @@ fun ItemUiSc(school: School, navController: NavHostController) {
                     )
                 }
 
-//click the arrow up/arrow down
+               //click the arrow up/arrow down
                 IconButton(onClick = { expand = !expand }) {
                     Icon(
                         painter = if (expand) painterResource(id = R.drawable.arrow_up) else painterResource(
@@ -110,6 +120,7 @@ fun ItemUiSc(school: School, navController: NavHostController) {
                         "Total Students :-  " to school.total_students,
                         "Graduation Rate :-  " to school.graduation_rate,
                         "College Career Rate:- " to school.college_career_rate,
+                        "College Safe Rate:- " to school.pct_stu_safe,
                         "School Email :- " to school.school_email,
                         "Phone Number :- " to school.phone_number,
                         "Fax Number :- " to school.fax_number,
@@ -163,13 +174,7 @@ fun ItemUiSc(school: School, navController: NavHostController) {
                                         modifier = Modifier
                                             .size(50.dp)
                                             .clickable {
-                                                navController.navigate(
-                                                    Destination.MapScreen.passArguments(
-                                                        coordinates[0],
-                                                        coordinates[1],
-                                                        address
-                                                    )
-                                                )
+                                                       mapOpen(context,coordinates[0],coordinates[1],address)
                                             },
                                         contentDescription = "map"
                                     )
@@ -179,7 +184,6 @@ fun ItemUiSc(school: School, navController: NavHostController) {
                                         modifier = Modifier
                                             .size(50.dp)
                                             .clickable {
-                                               // Log.e("TAG", "ItemUiSc:------------------ "+school.dbn )
                                                 navController.navigate("sbnId/${school.dbn}")
                                             },
                                         contentDescription = "",
@@ -195,10 +199,15 @@ fun ItemUiSc(school: School, navController: NavHostController) {
     }
 }
 
+fun mapOpen(context: Context, latitude: String, longitude: String, address: String) {
+    val uri = Uri.parse("geo:$latitude,$longitude?q=$latitude,$longitude($address)")
+    val intent = Intent(Intent.ACTION_VIEW, uri)
+    context.startActivity(intent)
+}
 
 
 @Composable
-fun SchoolScreen(navController: NavHostController, viewModel: SchoolViewModel) {
+fun SchoolScreen(viewModel:SchoolViewModel ,navController: NavHostController) {
     var response = viewModel.schools.observeAsState().value
 //loading,success and error condition
     when (response) {
@@ -230,13 +239,88 @@ fun LoadData(response: Response.Success<List<School>>, navController: NavHostCon
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     var searchQuery by remember { mutableStateOf("") }
-    var listItems = response.data
-    val filteredList = if (searchQuery.isEmpty()) {
+    var showDialog by remember { mutableStateOf(false) }
+    val isVisible by remember {
+        derivedStateOf {
+            searchQuery.isNotBlank()
+        }
+    }
+
+    // filter the list
+    val radioButtonOptions = listOf(
+        RadioButtonOption("Highest Graduation Rate", 1),
+        RadioButtonOption("Highest Collage Career Rate", 2),
+        RadioButtonOption("Highest Safe ", 3),
+        RadioButtonOption("Highest Number Of Students ", 4)
+    )
+    var selectedOption by remember { mutableStateOf(radioButtonOptions[0]) }
+
+
+    var listItem = response.data
+
+    val listItems=when(selectedOption.value){
+        1 ->listItem.sortedByDescending { it.graduation_rate}
+        2 ->listItem.sortedByDescending { it.college_career_rate }
+        3 ->listItem.sortedByDescending { it.pct_stu_safe }
+        4 ->listItem.sortedByDescending { it.total_students }
+        else -> {listItem}
+    }
+
+
+    var filteredList = if (searchQuery.isEmpty()) {
         listItems
+
     } else {
         listItems.filter { it.school_name.contains(searchQuery, ignoreCase = true) }
     }
+
+
+    // show dialog
+    if (showDialog){
+        Dialog(onDismissRequest = { showDialog=false }) {
+
+
+            Column(modifier = Modifier.background(backCard)) {
+                radioButtonOptions.forEach { option ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                            .clickable { selectedOption = option }
+                    ) {
+                        RadioButton(
+                            selected = selectedOption == option,
+                            onClick = { selectedOption = option },
+                            modifier = Modifier.align(Alignment.CenterVertically)
+                        )
+                        Text(
+                            text = option.text,
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                                .align(Alignment.CenterVertically)
+                        )
+                    }
+
+                }
+                Row(Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center) {
+                    Button(onClick = { showDialog=false}) {
+                        Text(text = "Filter")
+
+                    }
+                }
+
+            }
+
+        }
+
+
+    }
+
+
+    //search options
     Column {
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -259,7 +343,7 @@ fun LoadData(response: Response.Success<List<School>>, navController: NavHostCon
                         contentDescription = "Search Icon",
                         tint = Color.Gray
                     )
-                }, trailingIcon = {
+                }, trailingIcon = {if (isVisible){
                     IconButton(onClick = {
                         searchQuery = ""
                         keyboardController?.hide()
@@ -268,6 +352,14 @@ fun LoadData(response: Response.Success<List<School>>, navController: NavHostCon
                     ){
                         Icon(Icons.Filled.Close, contentDescription = "Clear Search")
                     }
+                }else{
+                    IconButton(onClick = {
+                        showDialog = !showDialog
+                    }
+                    ){
+                        Icon(Icons.Default.Menu, contentDescription = "menu")
+                    }
+                }
                 },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     textColor = Color.Black,
@@ -279,6 +371,8 @@ fun LoadData(response: Response.Success<List<School>>, navController: NavHostCon
                 )
             )
         }
+
+        //list view
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

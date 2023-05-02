@@ -11,25 +11,23 @@ import androidx.navigation.navArgument
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.jp.nycschools.viewmodel.SatViewModel
 import com.jp.nycschools.viewmodel.SchoolViewModel
-import com.rajeshbaraili.rajeshbaraili_nycshools.util.Destination
 
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun NavigationScreen() {
+    // navigation
     var schoolVieModel: SchoolViewModel = viewModel()
     var satViewModel: SatViewModel = viewModel()
     val navController = rememberNavController()
-    val LATTITUDE="latitude"
-    val LONGITUDE="longitude"
-    val ADDRESS="address"
     NavHost(
         navController = navController,
-        startDestination = Destination.HomeScreen.route
+        startDestination = "home"
     ) {
-        composable(route = Destination.HomeScreen.route) {
+        composable(route = "home") {
             TabLayout(navController, schoolVieModel, satViewModel)
         }
+        //navigation to Sat graph View
         composable("sbnId/{id}",
             arguments = listOf(
             navArgument("id") { type = NavType.StringType }
@@ -37,19 +35,7 @@ fun NavigationScreen() {
             val id = it.arguments?.getString("id") ?:""
             SatView(navController,satViewModel,id)
         }
-           composable(
-            route = Destination.MapScreen.route,
-            arguments = listOf(
-                navArgument(LATTITUDE) { type = NavType.FloatType },
-                navArgument(LONGITUDE) { type = NavType.FloatType } ,
-                navArgument(ADDRESS) { type = NavType.StringType }
-            )
-        ) {
-            val latitude = it.arguments?.getFloat(LATTITUDE) ?: 0f
-            val longitude = it.arguments?.getFloat(LONGITUDE) ?: 0f
-            val address = it.arguments?.getString(ADDRESS) ?:""
-            MapScreen(latitude, longitude,address,navController)
-        }
+
     }
 }
 

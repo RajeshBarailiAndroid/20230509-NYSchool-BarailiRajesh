@@ -1,6 +1,9 @@
 package com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -42,5 +45,6 @@ fun ErrorMsg(data: String) {
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
+
     }
 }

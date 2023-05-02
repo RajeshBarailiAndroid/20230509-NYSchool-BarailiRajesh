@@ -30,14 +30,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.Cyan
 import androidx.compose.ui.graphics.Color.Companion.Gray
-import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
@@ -82,12 +80,20 @@ fun Load(response: Response.Success<List<Sat>>, navController: NavHostController
 var position=id
     var sat=listSat.filter { it.dbn==id }?: listOf(Sat("1","0","0","0","0","0"))
     if(sat.isNotEmpty()){
+    chartPage(sat,navController)
+    }else{
+        var sat=listOf(Sat("1","0","0","0","0","0"))
+        chartPage(sat = sat, navController = navController)
+}
+}
+@Composable
+fun chartPage(sat: List<Sat>, navController: NavHostController) {
     var satTakers=sat[0].num_of_sat_test_takers
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "SAT Scores", textAlign = TextAlign.Center) },
-                backgroundColor = Transparent,
+                backgroundColor = Color.Transparent,
                 navigationIcon = {
                     IconButton(onClick = {navController.popBackStack()}) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
@@ -99,36 +105,27 @@ var position=id
         Box(modifier = Modifier.padding(contentPadding)) {
 
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(backCard),
-    ) {
-        Text(
-                text = "Number of SAT test takers: $satTakers",
-                style = MaterialTheme.typography.h5, modifier = Modifier
-                .align(CenterHorizontally)
-                .padding(vertical = 55.dp,)
-            )
-        PieChart(
-            data = mapOf(
-                Pair("Reading", sat[0].sat_math_avg_score.toInt()),
-                Pair("Writting", sat[0].sat_writing_avg_score.toInt()),
-                Pair("Math", sat[0].sat_math_avg_score.toInt()),
-
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(backCard),
+            ) {
+                Text(
+                    text = "Number of SAT test takers: $satTakers",
+                    style = MaterialTheme.typography.h5, modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(vertical = 55.dp,)
                 )
-        )
-    }
-}}}else{
-        PieChart(
-            data = mapOf(
-                Pair("Reading",0),
-                Pair("Writting",0),
-                Pair("Math",0),
+                PieChart(
+                    data = mapOf(
+                        Pair("Reading", sat[0].sat_math_avg_score.toInt()),
+                        Pair("Writting", sat[0].sat_writing_avg_score.toInt()),
+                        Pair("Math", sat[0].sat_math_avg_score.toInt()),
 
+                        )
                 )
-        )
-}
+            }
+        }}
 }
 
 @Composable

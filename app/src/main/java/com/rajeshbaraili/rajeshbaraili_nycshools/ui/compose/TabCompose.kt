@@ -117,7 +117,7 @@ fun TabsContent(
         when (page) {
 //called pages on click icon
             0 -> {
-               SchoolScreen(navController,viewModel1)
+               SchoolScreen(viewModel1,navController)
             }
             1 -> {
                SatScreen(viewModel2,navController)

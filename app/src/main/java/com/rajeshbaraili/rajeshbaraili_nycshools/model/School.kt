@@ -10,7 +10,6 @@ data class School(
     val location: String,
     val fax_number: String,
     val school_email: String,
-
-
+    val pct_stu_safe:String
 
 )
