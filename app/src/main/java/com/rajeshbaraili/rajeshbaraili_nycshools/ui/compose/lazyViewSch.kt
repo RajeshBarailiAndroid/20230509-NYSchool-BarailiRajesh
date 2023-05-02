@@ -64,6 +64,7 @@ import com.rajeshbaraili.rajeshbaraili_nycshools.ui.theme.backCard
 
 @Composable
 fun ItemUiSc(school: School, navController: NavHostController) {
+    // show the list on view
     var context= LocalContext.current
     var expand by remember { (mutableStateOf(false)) }
     Card(
@@ -198,7 +199,7 @@ fun ItemUiSc(school: School, navController: NavHostController) {
         }
     }
 }
-
+// sho
 fun mapOpen(context: Context, latitude: String, longitude: String, address: String) {
     val uri = Uri.parse("geo:$latitude,$longitude?q=$latitude,$longitude($address)")
     val intent = Intent(Intent.ACTION_VIEW, uri)
@@ -262,7 +263,7 @@ fun LoadData(response: Response.Success<List<School>>, navController: NavHostCon
         1 ->listItem.sortedByDescending { it.graduation_rate}
         2 ->listItem.sortedByDescending { it.college_career_rate }
         3 ->listItem.sortedByDescending { it.pct_stu_safe }
-        4 ->listItem.sortedByDescending { it.total_students }
+        4 ->listItem.sortedByDescending { it.total_students}
         else -> {listItem}
     }
 

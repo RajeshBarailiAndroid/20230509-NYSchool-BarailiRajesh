@@ -122,7 +122,7 @@ fun ItemUi(sat: Sat, navController: NavHostController) {
                                 )
                             )
                             //set text=data  if data null set text N/A
-                            (list[index].second)?.let { Text(text = (list[index].second)) } ?: Text(
+                            (list[index].second)?.let { Text(text = (list[index].second.toString())) } ?: Text(
                                 text = "N/A"
                             )
 
@@ -184,7 +184,6 @@ fun LoadDataSat(response: Response.Success<List<Sat>>, navController: NavHostCon
         RadioButtonOption("Highest Math Score", 1),
         RadioButtonOption("Highest Reading Score", 2),
         RadioButtonOption("Highest Writing Score", 3),
-        RadioButtonOption("Highest Numbers Of Test Takers", 4)
     )
     var selectedOption by remember { mutableStateOf(radioButtonOptions[0]) }
 
@@ -194,7 +193,6 @@ fun LoadDataSat(response: Response.Success<List<Sat>>, navController: NavHostCon
         1 ->listI.sortedByDescending { it.sat_math_avg_score}
         2 ->listI.sortedByDescending { it.sat_critical_reading_avg_score }
         3 ->listI.sortedByDescending { it.sat_writing_avg_score }
-        4 ->listI.sortedByDescending { it.num_of_sat_test_takers}
         else -> {listItem}
     }
 
