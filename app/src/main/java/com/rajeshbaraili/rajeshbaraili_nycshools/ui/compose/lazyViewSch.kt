@@ -118,7 +118,7 @@ fun ItemUiSc(school: School, navController: NavHostController) {
                 ) {
                     Log.e("TAG", "ItemUiSc: "+school.dbn )
                     val list = listOf(
-                        "Total Students :-  " to school.total_students,
+                        "Total Students :-  " to school.totalStudent,
                         "Graduation Rate :-  " to school.graduation_rate,
                         "College Career Rate:- " to school.college_career_rate,
                         "College Safe Rate:- " to school.pct_stu_safe,
@@ -139,7 +139,8 @@ fun ItemUiSc(school: School, navController: NavHostController) {
                                     )
                                 )
                                 //set text=data  if data null set text N/A
-                                (list[index].second)?.let { Text(text = (list[index].second)) }
+
+                                (list[index].second)?.let { Text(text = (list[index].second).toString()) }
                                     ?: Text(
                                         text = "N/A"
                                     )
@@ -150,7 +151,7 @@ fun ItemUiSc(school: School, navController: NavHostController) {
                         else {
 
                             Column {
-                                var input = list[index].second
+                                var input = list[index].second.toString()
                                 val address = input.substringBefore("(").trim()
                                 val coordinates =
                                     input.substringAfter("(").replace(")", "").split(",")
@@ -263,7 +264,7 @@ fun LoadData(response: Response.Success<List<School>>, navController: NavHostCon
         1 ->listItem.sortedByDescending { it.graduation_rate}
         2 ->listItem.sortedByDescending { it.college_career_rate }
         3 ->listItem.sortedByDescending { it.pct_stu_safe }
-        4 ->listItem.sortedByDescending { it.total_students}
+        4 ->listItem.sortedByDescending { it.totalStudent}
         else -> {listItem}
     }
 

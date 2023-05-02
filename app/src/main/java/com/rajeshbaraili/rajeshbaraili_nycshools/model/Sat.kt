@@ -10,5 +10,6 @@ data class Sat(
     val sat_writing_avg_score: String,
     val school_name: String
 ) {
-
+    val testTakers: Int
+        get() = num_of_sat_test_takers.toIntOrNull() ?: 0
 }

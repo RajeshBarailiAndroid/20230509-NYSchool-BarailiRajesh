@@ -12,4 +12,7 @@ data class School(
     val school_email: String,
     val pct_stu_safe:String
 
-)
+){
+    val totalStudent: Int
+        get() = total_students.toIntOrNull() ?: 0
+}

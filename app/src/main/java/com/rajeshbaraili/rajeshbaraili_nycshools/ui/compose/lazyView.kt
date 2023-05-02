@@ -106,7 +106,7 @@ fun ItemUi(sat: Sat, navController: NavHostController) {
                         .fillMaxWidth()
                 ) {
                     val list = listOf(
-                        "Number Of Test Takers :- " to sat.num_of_sat_test_takers,
+                        "Number Of Test Takers :- " to sat.testTakers,
                         "Critical Reading Average Score :-" to sat.sat_critical_reading_avg_score,
                         "SAT Writing Average Score:- " to sat.sat_writing_avg_score,
                         "Math Average Score:- " to sat.sat_math_avg_score
@@ -184,6 +184,7 @@ fun LoadDataSat(response: Response.Success<List<Sat>>, navController: NavHostCon
         RadioButtonOption("Highest Math Score", 1),
         RadioButtonOption("Highest Reading Score", 2),
         RadioButtonOption("Highest Writing Score", 3),
+        RadioButtonOption("Highest Numbers Of Test Takers", 4)
     )
     var selectedOption by remember { mutableStateOf(radioButtonOptions[0]) }
 
@@ -193,6 +194,7 @@ fun LoadDataSat(response: Response.Success<List<Sat>>, navController: NavHostCon
         1 ->listI.sortedByDescending { it.sat_math_avg_score}
         2 ->listI.sortedByDescending { it.sat_critical_reading_avg_score }
         3 ->listI.sortedByDescending { it.sat_writing_avg_score }
+        4 ->listI.sortedByDescending { it.testTakers}
         else -> {listItem}
     }
 
