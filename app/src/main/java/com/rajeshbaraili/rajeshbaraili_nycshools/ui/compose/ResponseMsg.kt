@@ -25,7 +25,7 @@ fun CircularProgressBar() {
     ) {
         CircularProgressIndicator(
             modifier = Modifier.size(80.dp),
-            color = MaterialTheme.colors.background,
+            color = MaterialTheme.colors.surface,
             strokeWidth = 6.dp
         )
     }
