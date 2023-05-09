@@ -1,6 +1,6 @@
 # Android MVVM Compose
 
-## Featured 
+## Features
 #### Used MVVM Architecture
 #### Used Compose UI
 #### Used Kotlin And Coroutine
