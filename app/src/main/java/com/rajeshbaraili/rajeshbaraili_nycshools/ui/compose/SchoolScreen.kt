@@ -70,8 +70,6 @@ fun SchoolScreen(viewModel: SchoolViewModel, navController: NavHostController) {
     when (response) {
         is Response.Loading -> {
             CircularProgressBar()
-
-
         }
 
         is Response.Success -> {

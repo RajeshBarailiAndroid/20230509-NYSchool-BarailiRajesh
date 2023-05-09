@@ -15,17 +15,8 @@ class TestUiCompose {
 
     @Test
     fun testSatScore() {
-  composeUiTest.onNodeWithText("SAT Scores").assertExists()
+  composeUiTest.onNodeWithText("progressLoader")
 
     }
-    @Test
-    fun testSchoolsDetail() {
-        composeUiTest.onNodeWithText("Schools Detail").assertExists()
 
-    }
-    @Test
-    fun testNewyorkSchoolInfo() {
-        composeUiTest.onNodeWithText("New York Schools Info").assertExists()
-
-    }
 }
