@@ -49,12 +49,9 @@ import com.rajeshbaraili.rajeshbaraili_nycshools.model.RadioButtonOption
 import com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose.CircularProgressBar
 import com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose.Content
 import com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose.ErrorMsg
-import com.rajeshbaraili.rajeshbaraili_nycshools.viewmodel.SharedViewModel
 
 @Composable
 fun ItemUiSc(school: School, navController: NavHostController) {
-    var viewMod:SharedViewModel = viewModel()
-    viewMod.schools.value=school
     ItemCard(
         school,
         onItemClicked = { navController.navigate("sbnId/${school.dbn}/${school.school_name}/${school.overview_paragraph}/${school.location}/${school.graduation_rate}/${school.college_career_rate}/${school.pct_stu_safe}")
@@ -167,7 +164,7 @@ fun LoadData(response: Response.Success<List<School>>, navController: NavHostCon
                         .background(MaterialTheme.colors.background),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Button(onClick = { showDialog = false }
+                    Button(onClick = { showDialog = false }, modifier = Modifier.background(MaterialTheme.colors.onBackground)
                           ) {
                         Text(text = "Done",color=MaterialTheme.colors.surface)
 

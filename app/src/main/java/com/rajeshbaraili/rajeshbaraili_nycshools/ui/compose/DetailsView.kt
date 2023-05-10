@@ -38,7 +38,6 @@ import com.jp.nycschools.viewmodel.SatViewModel
 import com.jp.nysandroidapp.ui.model.Sat
 import com.rajeshbaraili.rajeshbaraili_nycshools.R
 import com.rajeshbaraili.rajeshbaraili_nycshools.ui.theme.backCard
-import com.rajeshbaraili.rajeshbaraili_nycshools.viewmodel.SharedViewModel
 
 
 @Composable
@@ -174,9 +173,7 @@ fun DetailsView(
     careerRate: String,
     stuSafe: String
 ) {
-var school:SharedViewModel= viewModel()
-    var listS=school.schools.observeAsState().value
-    Log.e("TAG", "DetailsView: "+listS )
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -239,7 +236,7 @@ var school:SharedViewModel= viewModel()
 
         // Overview
         item {
-            listS.apply {
+            list.apply {
 
 
                 Spacer(modifier = Modifier.height(24.dp))
