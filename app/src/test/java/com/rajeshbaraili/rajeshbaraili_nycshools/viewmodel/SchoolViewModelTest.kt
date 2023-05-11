@@ -41,14 +41,14 @@ class SchoolViewModelTest {
     }
 
     @Test
-    fun `test fentchSchool with success response`() {
+    fun `test fetchSchool with success response`() {
         // mock response when getSchool is called
-        val response = listOf(School("1", "test1", "100", "100", "100", "300","tx","1","1"))
+        val response = listOf(School("1", "test1", "100", "100", "100", "300","tx","1","1","2","eee"))
         coEvery { repository.getSchool() } returns response
         viewModel.schools.observeForever {}
 
         // Call ViewModelScope
-        viewModel.fentchSchools()
+        viewModel.fetchSchools()
 
         // verifying the result
         assert(viewModel.schools.value is Response.Success)
@@ -57,7 +57,7 @@ class SchoolViewModelTest {
     }
 
     @Test
-    fun `test fentchSchool with error response`() {
+    fun `test fetchSchool with error response`() {
         // mock Error Message when called getSchool()
         val errorMsg = "error message"
         coEvery { repository.getSchool() } throws Exception(errorMsg)
@@ -65,7 +65,7 @@ class SchoolViewModelTest {
         viewModel.schools.observeForever {}
 
         // Call ViewModelScope
-        viewModel.fentchSchools()
+        viewModel.fetchSchools()
 
         // verifying the result
         assert(viewModel.schools.value is Response.Error)

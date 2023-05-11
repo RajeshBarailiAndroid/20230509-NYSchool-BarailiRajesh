@@ -56,7 +56,7 @@ class SatViewModelTest {
         viewModel.sat.observeForever { }
 
         // Call ViewModelScope
-        viewModel.fentchSat()
+        viewModel.fetchSat()
 
         // verifying the result
         assert(viewModel.sat.value is Response.Success)
@@ -74,7 +74,7 @@ class SatViewModelTest {
         //use the observer on livedata sat
         viewModel.sat.observeForever {}
         // Call ViewModelScope
-        viewModel.fentchSat()
+        viewModel.fetchSat()
 
         // verifying the result
         assert(viewModel.sat.value is Response.Error)

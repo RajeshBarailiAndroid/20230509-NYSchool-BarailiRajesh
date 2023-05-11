@@ -23,7 +23,7 @@ class SatViewModel @Inject constructor(private val repository: SchoolRepository)
         fetchSat()
     }
 
-    private fun fetchSat() {
+    fun fetchSat() {
         _sat.postValue(Response.Loading())
         viewModelScope.launch {
             try {

@@ -21,7 +21,7 @@ class SchoolViewModel @Inject constructor(private val repository: SchoolReposito
         fetchSchools()
     }
 
-    private fun fetchSchools() {
+    fun fetchSchools() {
         _schools.postValue(Response.Loading())
         viewModelScope.launch {
             try {
