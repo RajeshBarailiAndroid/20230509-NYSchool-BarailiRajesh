@@ -45,6 +45,7 @@ fun SatView(
     schoolVieModel: SchoolViewModel
 
 ) {
+
     var satResponse = satViewModel.sat.observeAsState().value
     var school = schoolVieModel.school.observeAsState().value
     if (satResponse != null) {
@@ -82,8 +83,6 @@ fun Load(
         Details(navController, school, sat)
     } else {
         var sat = listOf(Sat("1", "0", "0", "0", "0", "0"))
-        //  chartPage(sat = sat, navController = navController)
-
         Details(
             navController,
             school,
