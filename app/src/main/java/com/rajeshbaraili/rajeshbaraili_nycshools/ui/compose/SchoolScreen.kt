@@ -40,7 +40,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.jp.nycschoolapp.util.Response
 import com.jp.nycschools.model.School
@@ -54,7 +53,8 @@ import com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose.ErrorMsg
 fun ItemUiSc(school: School, navController: NavHostController) {
     ItemCard(
         school,
-        onItemClicked = { navController.navigate("sbnId/${school.dbn}/${school.schoolName}/${school.overviewParagraph}/${school.location}/${school.graduationRate}/${school.collegeCareerRate}/${school.pctStuSafe}")
+        onItemClicked = {
+            navController.navigate("sbnId/${school.dbn}/${school.schoolName}/${school.overviewParagraph}/${school.location}/${school.graduationRate}/${school.collegeCareerRate}/${school.pctStuSafe}")
         })
 
 }
@@ -64,26 +64,23 @@ fun ItemUiSc(school: School, navController: NavHostController) {
 fun SchoolScreen(viewModel: SchoolViewModel, navController: NavHostController) {
     var response = viewModel.schools.observeAsState().value
 //loading,success and error condition
+    if (response != null) {
+        when (response) {
+            is Response.Loading -> {
+                CircularProgressBar()
+            }
 
-    when (response) {
-        is Response.Loading -> {
-            CircularProgressBar()
-        }
+            is Response.Success -> {
+                LoadData(response, navController)
 
-        is Response.Success -> {
-            LoadData(response, navController)
+            }
 
-        }
+            is Response.Error -> {
+                ErrorMsg("School")
+            }
 
-        is Response.Error -> {
-            ErrorMsg("School")
-        }
-
-        else -> {
-            CircularProgressBar()
         }
     }
-
 
 }
 
@@ -151,7 +148,7 @@ fun LoadData(response: Response.Success<List<School>>, navController: NavHostCon
                             modifier = Modifier.align(Alignment.CenterVertically)
                         )
                         Text(
-                            text = option.text,color =MaterialTheme.colors.surface,
+                            text = option.text, color = MaterialTheme.colors.surface,
                             modifier = Modifier
                                 .padding(start = 16.dp)
                                 .align(Alignment.CenterVertically)
@@ -165,9 +162,11 @@ fun LoadData(response: Response.Success<List<School>>, navController: NavHostCon
                         .background(MaterialTheme.colors.background),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Button(onClick = { showDialog = false }, modifier = Modifier.background(MaterialTheme.colors.onBackground)
-                          ) {
-                        Text(text = "Done",color=MaterialTheme.colors.surface)
+                    Button(
+                        onClick = { showDialog = false },
+                        modifier = Modifier.background(MaterialTheme.colors.onBackground)
+                    ) {
+                        Text(text = "Done", color = MaterialTheme.colors.surface)
 
                     }
                 }
