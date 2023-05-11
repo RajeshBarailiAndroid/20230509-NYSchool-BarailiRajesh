@@ -31,5 +31,15 @@ class SchoolViewModel @Inject constructor(private val repository: SchoolReposito
             }
         }
     }
+// post value
+    private val _school = MutableLiveData<School>()
+    val school: LiveData<School>
+        get() = _school
+    fun setValue(school: School) {
+        _school.postValue(school)
+
+    }
+
+
 }
 

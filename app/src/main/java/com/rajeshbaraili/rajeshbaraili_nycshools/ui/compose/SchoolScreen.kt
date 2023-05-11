@@ -50,11 +50,13 @@ import com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose.Content
 import com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose.ErrorMsg
 
 @Composable
-fun ItemUiSc(school: School, navController: NavHostController) {
+fun ItemUiSc(school: School, navController: NavHostController, viewModel: SchoolViewModel) {
+
     ItemCard(
         school,
         onItemClicked = {
-            navController.navigate("sbnId/${school.dbn}/${school.schoolName}/${school.overviewParagraph}/${school.location}/${school.graduationRate}/${school.collegeCareerRate}/${school.pctStuSafe}")
+            viewModel.setValue(school)
+            navController.navigate("SchoolInfo")
         })
 
 }
@@ -71,7 +73,7 @@ fun SchoolScreen(viewModel: SchoolViewModel, navController: NavHostController) {
             }
 
             is Response.Success -> {
-                LoadData(response, navController)
+                LoadData(response, navController,viewModel)
 
             }
 
@@ -86,7 +88,11 @@ fun SchoolScreen(viewModel: SchoolViewModel, navController: NavHostController) {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LoadData(response: Response.Success<List<School>>, navController: NavHostController) {
+fun LoadData(
+    response: Response.Success<List<School>>,
+    navController: NavHostController,
+    viewModel: SchoolViewModel
+) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     var searchQuery by remember { mutableStateOf("") }
@@ -245,7 +251,7 @@ fun LoadData(response: Response.Success<List<School>>, navController: NavHostCon
         ) {
 
             items(filteredList) { item ->
-                ItemUiSc(item, navController)
+                ItemUiSc(item, navController,viewModel)
             }
         }
     }

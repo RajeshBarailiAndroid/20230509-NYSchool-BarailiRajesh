@@ -1,11 +1,9 @@
 package com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,46 +29,39 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.jp.nycschoolapp.util.Response
+import com.jp.nycschools.model.School
 import com.jp.nycschools.viewmodel.SatViewModel
+import com.jp.nycschools.viewmodel.SchoolViewModel
 import com.jp.nysandroidapp.ui.model.Sat
 import com.rajeshbaraili.rajeshbaraili_nycshools.R
-import com.rajeshbaraili.rajeshbaraili_nycshools.ui.theme.backCard
 
 
 @Composable
 fun SatView(
     navController: NavHostController,
     satViewModel: SatViewModel,
-    id: String,
-    schoolName: String,
-    overview: String,
-    location: String,
-    graduationRate: String,
-    careerRate: String,
-    stuSafe: String,
+    schoolVieModel: SchoolViewModel
 
+) {
+    var satResponse = satViewModel.sat.observeAsState().value
+    var school = schoolVieModel.school.observeAsState().value
+    if (satResponse != null) {
+        when (satResponse) {
+            is Response.Loading -> {
+                CircularProgressBar()
+            }
 
-    ) {
-    var response = satViewModel.sat.observeAsState().value
+            is Response.Success -> {
+                if (school != null) {
+                    Load(satResponse, navController, school)
+                }
+            }
 
-    when (response) {
-        is Response.Loading -> {
-            CircularProgressBar()
-        }
-
-        is Response.Success -> {
-            Load(response, navController, id,schoolName,overview, location,graduationRate,careerRate,stuSafe)
-        }
-
-        is Response.Error -> {
-            ErrorMsg("SAT")
-        }
-
-        else -> {
-            CircularProgressBar()
+            is Response.Error -> {
+                ErrorMsg("SAT")
+            }
         }
     }
 
@@ -79,68 +70,43 @@ fun SatView(
 
 @Composable
 fun Load(
-    response: Response.Success<List<Sat>>,
+    satResponse: Response.Success<List<Sat>>,
     navController: NavHostController,
-    id: String,
-    schoolName: String,
-    overview: String,
-    location: String,
-    graduationRate: String,
-    careerRate: String,
-    stuSafe: String,
-
+    school: School,
     ) {
-    var listSat = response.data
-    var position = id
-    var sat = listSat.filter { it.dbn == id }
+    var listSat = satResponse.data
+    var position = school.dbn
+    var sat = listSat.filter { it.dbn == position }
     if (sat.isNotEmpty()) {
-       //HomeScreen()
-       Details(navController, id,sat,schoolName,overview,location,graduationRate,careerRate,stuSafe)
+        //HomeScreen()
+        Details(navController, school, sat)
     } else {
         var sat = listOf(Sat("1", "0", "0", "0", "0", "0"))
-      //  chartPage(sat = sat, navController = navController)
+        //  chartPage(sat = sat, navController = navController)
 
         Details(
             navController,
-            id,
-            sat,
-            schoolName,
-            overview,
-            location,
-            graduationRate,
-            careerRate,
-            stuSafe
+            school,
+            sat
+
         )
     }
 }
-@Composable
-fun chartPage(sat: List<Sat>, navController: NavHostController) {
-Column(modifier = Modifier
-    .fillMaxWidth()
-    .background(backCard)) {
 
-}
-}
 
 @Composable
 fun Details(
     navController: NavHostController,
-    id: String,
-    sat: List<Sat>,
-    schoolName: String,
-    overview: String,
-    location: String,
-    graduationRate: String,
-    careerRate: String,
-    stuSafe: String,
+    school: School,
+    sat: List<Sat>
 
-    ) {
+) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Details") },
                 backgroundColor = MaterialTheme.colors.background,
-                contentColor =(MaterialTheme.colors.surface),
+                contentColor = (MaterialTheme.colors.surface),
                 navigationIcon = {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
@@ -156,22 +122,17 @@ fun Details(
             )
         },
 
-        content = {it.calculateTopPadding()
-            DetailsView(id,sat,schoolName,overview,location,graduationRate,careerRate,stuSafe)
+        content = {
+            it.calculateTopPadding()
+            DetailsView(school, sat)
         }
     )
 }
 
 @Composable
 fun DetailsView(
-    id: String,
-    list: List<Sat>,
-    schoolName: String,
-    overview: String,
-    location: String,
-    graduationRate: String,
-    careerRate: String,
-    stuSafe: String
+    school: School, list: List<Sat>
+
 ) {
 
     LazyColumn(
@@ -185,7 +146,7 @@ fun DetailsView(
 
         item {
             Text(
-                text =schoolName,
+                text = school.schoolName,
                 modifier = Modifier.fillMaxWidth(),
                 color = colorResource(id = R.color.text),
                 style = MaterialTheme.typography.subtitle1,
@@ -205,16 +166,18 @@ fun DetailsView(
                         .padding(16.dp, 0.dp, 16.dp, 0.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    item{ InfoCard(title = "Math", value = list.get(0).satMathAvgScore)
+                    item {
+                        InfoCard(title = "Math", value = list[0].satMathAvgScore)
                         Spacer(modifier = Modifier.width(9.dp))
-                        InfoCard(title = "Reading", value = list.get(0).satWritingAvgScore)
+                        InfoCard(title = "Reading", value = list[0].satWritingAvgScore)
                         Spacer(modifier = Modifier.width(9.dp))
-                        InfoCard(title = "Writing", value = list.get(0).satReadingAvgScore)}
+                        InfoCard(title = "Writing", value = list[0].satReadingAvgScore)
+                    }
                 }
             }
         }
         item {
-            list.apply {
+            school.apply {
 
                 Spacer(modifier = Modifier.height(24.dp))
                 Title(title = "School Info (Rate)")
@@ -225,39 +188,40 @@ fun DetailsView(
                         .padding(16.dp, 0.dp, 16.dp, 0.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    item{ InfoCard(title = "Graduation", value = graduationRate)
+                    item {
+                        school?.graduationRate?.let { InfoCard(title = "Graduation", value = it) }
                         Spacer(modifier = Modifier.width(9.dp))
-                        InfoCard(title = "Career", value = careerRate)
+                        school?.collegeCareerRate?.let { InfoCard(title = "Career", value = it) }
                         Spacer(modifier = Modifier.width(9.dp))
-                        InfoCard(title = "Stu. Safe", value = stuSafe)}
+                        school?.pctStuSafe?.let { InfoCard(title = "Stu. Safe", value = it) }
+
+                    }
                 }
             }
         }
 
         // Overview
         item {
-            list.apply {
-
-
+            school.apply {
                 Spacer(modifier = Modifier.height(24.dp))
                 Title(title = "Overview")
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text =overview,
+                    text = school.overviewParagraph,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp, 0.dp, 16.dp, 0.dp),
                     color = colorResource(id = R.color.text),
                     style = MaterialTheme.typography.body2,
-                    textAlign = TextAlign.Start)
+                    textAlign = TextAlign.Start
+                )
             }
         }
 
 
 
         item {
-            list.apply {
-
+            school.apply {
                 Spacer(modifier = Modifier.height(24.dp))
                 Title(title = "GPS Map")
                 Spacer(modifier = Modifier.height(16.dp))
@@ -267,10 +231,9 @@ fun DetailsView(
                         .padding(16.dp, 0.dp, 16.dp, 0.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    item{
+                    item {
                         Spacer(modifier = Modifier.width(9.dp))
-                   ImageClick(location)
-
+                        ImageClick(school.location)
 
 
                     }
@@ -283,18 +246,20 @@ fun DetailsView(
 
 @Composable
 fun ImageClick(location: String) {
-var context= LocalContext.current
-            Image(
-                painter = painterResource(R.drawable.map),
-                contentDescription = "Map",
-                modifier = Modifier.size(50.dp).clickable {
-                    mapOpen(context = context,location)
-                }
-            )
-
+    var context = LocalContext.current
+    Image(
+        painter = painterResource(R.drawable.map),
+        contentDescription = "Map",
+        modifier = Modifier
+            .size(50.dp)
+            .clickable {
+                mapOpen(context = context, location)
+            }
+    )
 
 
 }
+
 @Composable
 fun Title(title: String) {
     Text(
