@@ -39,7 +39,7 @@ fun ItemCard(school:School, onItemClicked: (school: School) -> Unit) {
 
             Column(modifier = Modifier.align(Alignment.CenterVertically)) {
                 Text(
-                    text = school.school_name,
+                    text = school.schoolName,
                     modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp),
                     color = MaterialTheme.colors.surface,
                     fontWeight = FontWeight.Bold,

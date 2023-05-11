@@ -1,17 +1,28 @@
 package com.jp.nycschools.model
 
+import com.google.gson.annotations.SerializedName
+
 data class School(
     val dbn: String,
-    val school_name: String,
-    val phone_number: String,
-    val total_students: String,
-    val graduation_rate: String,
-    val college_career_rate: String,
+    @SerializedName("school_name")
+    val schoolName: String,
+    @SerializedName("phone_number")
+    val phoneNumber: String,
+    @SerializedName("total_students")
+    val totalStudents: String,
+    @SerializedName("graduation_rate")
+    val graduationRate: String,
+    @SerializedName("college_career_rate")
+    val collegeCareerRate: String,
     val location: String,
-    val fax_number: String,
-    val school_email: String,
-    val pct_stu_safe:String,
-    val overview_paragraph:String
+    @SerializedName("fax_number")
+    val faxNumber: String,
+    @SerializedName("school_email")
+    val schoolEmail: String,
+    @SerializedName("pct_stu_safe")
+    val pctStuSafe:String,
+    @SerializedName("overview_paragraph")
+    val overviewParagraph:String
 
 
     ){
@@ -22,5 +33,5 @@ data class School(
     val longitude: String
         get() = location.substringAfter(",").substringBefore(")").trim()
     val totalStudent: Int
-        get() = total_students.toIntOrNull() ?: 0
+        get() = totalStudents.toIntOrNull() ?: 0
 }

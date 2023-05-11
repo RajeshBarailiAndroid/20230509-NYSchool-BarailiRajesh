@@ -18,10 +18,10 @@ class SchoolViewModel @Inject constructor(private val repository: SchoolReposito
         get() = _schools
 
     init {
-        fentchSchools()
+        fetchSchools()
     }
 
-    fun fentchSchools() {
+    private fun fetchSchools() {
         _schools.postValue(Response.Loading())
         viewModelScope.launch {
             try {

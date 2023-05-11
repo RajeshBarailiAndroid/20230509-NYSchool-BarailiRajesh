@@ -54,7 +54,7 @@ import com.rajeshbaraili.rajeshbaraili_nycshools.ui.compose.ErrorMsg
 fun ItemUiSc(school: School, navController: NavHostController) {
     ItemCard(
         school,
-        onItemClicked = { navController.navigate("sbnId/${school.dbn}/${school.school_name}/${school.overview_paragraph}/${school.location}/${school.graduation_rate}/${school.college_career_rate}/${school.pct_stu_safe}")
+        onItemClicked = { navController.navigate("sbnId/${school.dbn}/${school.schoolName}/${school.overviewParagraph}/${school.location}/${school.graduationRate}/${school.collegeCareerRate}/${school.pctStuSafe}")
         })
 
 }
@@ -64,6 +64,7 @@ fun ItemUiSc(school: School, navController: NavHostController) {
 fun SchoolScreen(viewModel: SchoolViewModel, navController: NavHostController) {
     var response = viewModel.schools.observeAsState().value
 //loading,success and error condition
+
     when (response) {
         is Response.Loading -> {
             CircularProgressBar()
@@ -112,9 +113,9 @@ fun LoadData(response: Response.Success<List<School>>, navController: NavHostCon
     var listItem = response.data
 
     val listItems = when (selectedOption.value) {
-        1 -> listItem.sortedByDescending { it.graduation_rate }
-        2 -> listItem.sortedByDescending { it.college_career_rate }
-        3 -> listItem.sortedByDescending { it.pct_stu_safe }
+        1 -> listItem.sortedByDescending { it.graduationRate }
+        2 -> listItem.sortedByDescending { it.collegeCareerRate }
+        3 -> listItem.sortedByDescending { it.pctStuSafe }
         4 -> listItem.sortedByDescending { it.totalStudent }
         else -> {
             listItem
@@ -126,7 +127,7 @@ fun LoadData(response: Response.Success<List<School>>, navController: NavHostCon
         listItems
 
     } else {
-        listItems.filter { it.school_name.contains(searchQuery, ignoreCase = true) }
+        listItems.filter { it.schoolName.contains(searchQuery, ignoreCase = true) }
     }
 
 

@@ -205,11 +205,11 @@ fun DetailsView(
                         .padding(16.dp, 0.dp, 16.dp, 0.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    item{ InfoCard(title = "Math", value = list.get(0).sat_math_avg_score)
+                    item{ InfoCard(title = "Math", value = list.get(0).satMathAvgScore)
                         Spacer(modifier = Modifier.width(9.dp))
-                        InfoCard(title = "Reading", value = list.get(0).sat_writing_avg_score)
+                        InfoCard(title = "Reading", value = list.get(0).satWritingAvgScore)
                         Spacer(modifier = Modifier.width(9.dp))
-                        InfoCard(title = "Writing", value = list.get(0).sat_critical_reading_avg_score)}
+                        InfoCard(title = "Writing", value = list.get(0).satReadingAvgScore)}
                 }
             }
         }
