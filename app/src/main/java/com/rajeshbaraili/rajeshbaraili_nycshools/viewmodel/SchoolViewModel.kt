@@ -8,6 +8,7 @@ import com.jp.nycschoolapp.util.Response
 import com.jp.nycschools.model.School
 import com.jp.nycschools.network.SchoolRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,7 +24,7 @@ class SchoolViewModel @Inject constructor(private val repository: SchoolReposito
 
     fun fetchSchools() {
         _schools.postValue(Response.Loading())
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 _schools.postValue(Response.Success(repository.getSchool()))
             } catch (e: Exception) {

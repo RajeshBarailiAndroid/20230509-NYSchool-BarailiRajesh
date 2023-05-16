@@ -12,7 +12,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
+import com.jp.nycschools.model.School
+import com.jp.nycschools.viewmodel.SatViewModel
+import com.jp.nycschools.viewmodel.SchoolViewModel
 
 
 // Header
@@ -28,7 +34,7 @@ fun Header(header: String) {
 
 
 }
-
+// header text
 @Composable
 fun Content() {
     Column() {
@@ -36,5 +42,10 @@ fun Content() {
         Header("NY Schools Info")
 
     }
+}
+@Preview(showBackground = true)
+@Composable
+fun PreviewHeader() {
+    Content()
 }
 

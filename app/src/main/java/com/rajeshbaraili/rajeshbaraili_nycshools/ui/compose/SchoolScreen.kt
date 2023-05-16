@@ -38,6 +38,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
@@ -55,7 +57,7 @@ fun ItemUiSc(school: School, navController: NavHostController, viewModel: School
     ItemCard(
         school,
         onItemClicked = {
-            viewModel.setValue(school)
+            viewModel.setValue(it)
             navController.navigate("SchoolInfo")
         })
 
@@ -200,10 +202,10 @@ fun LoadData(
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 30.dp),
-                shape = RoundedCornerShape(10.dp),
+                shape = RoundedCornerShape(10.dp), textStyle = TextStyle(color =MaterialTheme.colors.surface),
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
-                placeholder = { Text("Search") },
+                placeholder = { Text("Search", color = MaterialTheme.colors.surface) },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Filled.Search,
@@ -258,3 +260,4 @@ fun LoadData(
 
 
 }
+

@@ -9,11 +9,12 @@ import com.jp.nycschools.model.School
 import com.jp.nycschools.network.SchoolRepository
 import com.jp.nysandroidapp.ui.model.Sat
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SatViewModel @Inject constructor(private val repository: SchoolRepository) : ViewModel() {
+class SatViewModel @Inject constructor(private val repository:SchoolRepository) : ViewModel() {
 
     private val _sat = MutableLiveData<Response<List<Sat>>>()
     val sat: LiveData<Response<List<Sat>>>
@@ -25,7 +26,7 @@ class SatViewModel @Inject constructor(private val repository: SchoolRepository)
 
     fun fetchSat() {
         _sat.postValue(Response.Loading())
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 _sat.postValue(Response.Success(repository.getSat()))
             } catch (e: Exception) {
