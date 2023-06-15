@@ -2,7 +2,7 @@
 
 ## Features
 #### Used MVVM Architecture
-#### Used Compose UI
+#### Used Jetpack Compose UI
 #### Used Kotlin And Coroutine
 #### Used Mockk for unit testing and Comspose Ui testing for UI
 #### Used Hilt for Dependency Injection
